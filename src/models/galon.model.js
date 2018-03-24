@@ -9,14 +9,13 @@ const GalonSchema = new Schema({
         type : Number,
         required : true
     },
-    price : {
+    priceOfBuying : {
         type : Number,
         required : true
     },
-    typeOfOrder : {
-        type : String,
-        enum : ['buying', 'substitution'],
-        default : 'buying'
+    priceOfSubstitution : {
+        type : Number,
+        required : true,
     },
     minimumNumberOnOrder : {
         type : Number, 
