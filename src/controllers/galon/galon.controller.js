@@ -11,7 +11,7 @@ export default {
     validateBody(isUpdate = false) {
         return [
             body("size").exists().withMessage("numberOfBottles is required"),
-            body("price").exists().withMessage("sizeOfBottles is required")
+            body("priceOfBuying").exists().withMessage("priceOfBuying is required")
         ];
     },
     //create new galon
