@@ -61,9 +61,9 @@ export default {
     },
     //update cartone
     async updateCartona(req, res, next) {
-        const cartonID = req.params.cartonID;
+        const cartonId = req.params.cartonId;
         try {
-            let carton = await Cartona.findById(cartonID)
+            let carton = await Cartona.findById(cartonId)
             if (!(req.user.id == carton.user)) {
                 return next(new ApiError(403, "not have access to this resourse"))
             }
@@ -71,7 +71,7 @@ export default {
             if (req.file) {
                 req.body.img = await toImgUrl(req.file)
             }
-            await Cartona.update({ _id: cartonID }, {
+            await Cartona.update({ _id: cartonId }, {
                 $set: {
                     numberOfBottles: req.body.numberOfBottles || carton.numberOfBottles,
                     sizeOfBottles: req.body.sizeOfBottles || carton.sizeOfBottles,
@@ -92,9 +92,9 @@ export default {
     //retrive one cartone details 
     async cartonDetails(req, res, next) {
         try {
-            if (!req.params.cartonID)
-                next(new ApiError(422, "missed cartonID"))
-            const cartonId = req.params.cartonID;
+            if (!req.params.cartonId)
+                next(new ApiError(422, "missed cartonId"))
+            const cartonId = req.params.cartonId;
             let carton = await Cartona.findById(cartonId).populate('user')
             if (!carton) {
                 return res.status(404).end();

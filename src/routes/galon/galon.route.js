@@ -12,4 +12,11 @@ router.route('/')
     )
     .get(GalonController.allGalons)
 
+router.route('/:galonId')
+    .get(GalonController.galonDetails)
+
+    .put(
+        multerSaveTo('galons').single('img'),
+        GalonController.updateGalon)
+
 export default router;

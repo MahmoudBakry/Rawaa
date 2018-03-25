@@ -58,5 +58,42 @@ export default {
         }
     },
 
-    //retrive 
+    //retrive one galone details 
+    async galonDetails(req, res, next) {
+        const galonId = req.params.galonId;
+        let doc = await Galon.findById(galonId);
+        if (!doc)
+            return next(new ApiError(404));
+        return res.status(200).json(doc);
+    },
+
+    //update one galon details 
+    async updateGalon(req, res, next) {
+        const galonId = req.params.galonId;
+        try {
+            let galon = await Galon.findById(galonId)
+            if (!(req.user.id == galon.user)) {
+                return next(new ApiError(403, "not have access to this resourse"))
+            }
+            if (req.file) {
+                req.body.img = await toImgUrl(req.file)
+            }
+            await Galon.update({ _id: galonId }, {
+                $set: {
+                    size: req.body.size || galon.size,
+                    img: req.body.img || galon.img,
+                    priceOfBuying: req.body.priceOfBuying || galon.priceOfBuying,
+                    priceOfSubstitution: req.body.priceOfSubstitution || galon.priceOfSubstitution,
+                    minimumNumberOnOrder: req.body.minimumNumberOnOrder || galon.minimumNumberOnOrder,
+                }
+            })
+            let newGalon = await Galon.findById(galonId)
+                .populate('user')
+            return res.status(200).json(newGalon)
+        } catch (err) {
+            next(err)
+        }
+    },
+
+
 }

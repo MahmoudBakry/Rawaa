@@ -13,11 +13,11 @@ router.route('/')
 
     .get(CartonaController.allCartones)
 
-router.route('/:cartonID')
+router.route('/:cartonId')
     .put(multerSaveTo('cartona').single('img'),
         CartonaController.updateCartona)
 
-     .get(CartonaController.cartonDetails)   
+    .get(CartonaController.cartonDetails)
 
 export default router;
 
