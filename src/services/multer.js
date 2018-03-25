@@ -31,7 +31,7 @@ export function multerSaveTo(folderName) {
 
     return multer({
         storage,
-        fileFilter,
+      //  fileFilter,
         limits: {
             fileSize: 1024 * 1024 * 10 // limit 10mb
         }

@@ -69,7 +69,6 @@ export default {
             next(err);
         }
     },
-
     //sign in logic 
     async signin(req, res, next) {
         let user = req.user; // Passport

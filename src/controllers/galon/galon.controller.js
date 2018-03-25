@@ -95,5 +95,28 @@ export default {
         }
     },
 
+    //retrive all galons under one provider 
+    async galonsOfOneProvider(req, res, next) {
+        const limit = parseInt(req.query.limit) || 20;
+        const page = req.query.page || 1;
+        const userId = req.params.userId;
+        try {
+            let docsCount = await Galon.count({ user: userId })
+            let allDocs = await Galon.find({ user: userId })
+                .populate('user')
+                .skip((page - 1) * limit).limit(limit).sort({ creationDate: -1 })
+            return res.send(new ApiResponse(
+                allDocs,
+                page,
+                Math.ceil(docsCount / limit),
+                limit,
+                docsCount,
+                req
+            ))
+        } catch (err) {
+            next(err)
+        }
+    },
+
 
 }

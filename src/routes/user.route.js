@@ -1,8 +1,9 @@
 import UserController from '../controllers/user.controller'
+import galonController from '../controllers/galon/galon.controller'
 import express from 'express';
 import passport from "passport";
 import passportService from '../services/passport';
-import {multerSaveTo} from '../services/multer'
+import { multerSaveTo } from '../services/multer'
 const requireSignIn = passport.authenticate('local', { session: false });
 const router = express.Router();
 
@@ -15,6 +16,11 @@ router.route('/signup')
 
 router.post("/signin", requireSignIn, UserController.signin);
 
+router.route("/users/:userId/galons")
+    .get(galonController.galonsOfOneProvider)
+
+router.route("/users/:userId/cartons")
+    .get(galonController.galonsOfOneProvider)
 export default router;
 
 

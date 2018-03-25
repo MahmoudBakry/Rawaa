@@ -18,5 +18,6 @@ router.route('/:galonId')
     .put(
         multerSaveTo('galons').single('img'),
         GalonController.updateGalon)
+        
 
 export default router;

@@ -103,6 +103,28 @@ export default {
         } catch (err) {
             next
         }
-    }
+    },
+      //retrive all galons under one provider 
+      async cartonsOfOneProvider(req, res, next) {
+        const limit = parseInt(req.query.limit) || 20;
+        const page = req.query.page || 1;
+        const userId = req.params.userId;
+        try {
+            let docsCount = await Cartona.count({ user: userId })
+            let allDocs = await Cartona.find({ user: userId })
+                .populate('user')
+                .skip((page - 1) * limit).limit(limit).sort({ creationDate: -1 })
+            return res.send(new ApiResponse(
+                allDocs,
+                page,
+                Math.ceil(docsCount / limit),
+                limit,
+                docsCount,
+                req
+            ))
+        } catch (err) {
+            next(err)
+        }
+    },
 
 }
