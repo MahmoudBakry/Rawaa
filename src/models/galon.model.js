@@ -15,7 +15,6 @@ const GalonSchema = new Schema({
     },
     priceOfSubstitution : {
         type : Number,
-        required : true,
     },
     minimumNumberOnOrder : {
         type : Number, 
