@@ -1,37 +1,37 @@
-import mongoose , {Schema} from 'mongoose';
-import autoIncrement from 'mongoose-auto-increment'; 
+import mongoose, { Schema } from 'mongoose';
+import autoIncrement from 'mongoose-auto-increment';
 const GalonSchema = new Schema({
-    img : {
-        type : String,
-        required : true
+    img: {
+        type: String,
+        required: true
     },
-    size : {
-        type : Number,
-        required : true
+    size: {
+        type: Number,
+        required: true
     },
-    priceOfBuying : {
-        type : Number,
-        required : true
+    priceOfBuying: {
+        type: Number,
+        required: true
     },
-    priceOfSubstitution : {
-        type : Number,
+    priceOfSubstitution: {
+        type: Number,
     },
-    minimumNumberOnOrder : {
-        type : Number, 
-        default : 3,
+    minimumNumberOnOrder: {
+        type: Number,
+        default: 3,
     },
-    user:{
-        type : Number, 
-        ref : "user"
+    user: {
+        type: Number,
+        ref: "user"
     },
-    creationDate : {
-        type : Date, 
-        default : Date.now
+    creationDate: {
+        type: Date,
+        default: Date.now
     }
 })
 
 GalonSchema.set('toJSON', {
-    transform : (doc, ret, options)=>{
+    transform: (doc, ret, options) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
@@ -40,6 +40,9 @@ GalonSchema.set('toJSON', {
 
 
 autoIncrement.initialize(mongoose.connection);
-GalonSchema.plugin(autoIncrement.plugin, 'galon');
+GalonSchema.plugin(autoIncrement.plugin, {
+    model: 'galon',
+    startAt: 1,
+});
 
 export default mongoose.model("galon", GalonSchema); 

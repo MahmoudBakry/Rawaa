@@ -1,50 +1,50 @@
-import mongoose , {Schema} from 'mongoose';
-import autoIncrement from 'mongoose-auto-increment'; 
+import mongoose, { Schema } from 'mongoose';
+import autoIncrement from 'mongoose-auto-increment';
 
 const CartonSchema = new Schema({
-    img : {
-        type : String,
-        required : true
+    img: {
+        type: String,
+        required: true
     },
-    numberOfBottles : {
-        type :Number,
-        default : 1,
-        required : true
+    numberOfBottles: {
+        type: Number,
+        default: 1,
+        required: true
     },
-    sizeOfBottles : {
-        type : Number,
-        required : true
+    sizeOfBottles: {
+        type: Number,
+        required: true
     },
-    typeOfSize : {
-        type : String,
-        enum : ['liter', 'Millimeter'],
-        default : 'liter'
+    typeOfSize: {
+        type: String,
+        enum: ['liter', 'Millimeter'],
+        default: 'liter'
     },
-    price : {
-        type : Number,
-        required : true
+    price: {
+        type: Number,
+        required: true
     },
-    typeOfOrder : {
-        type : String,
-        enum : ['buying', 'substitution'],
-        default : 'buying'
+    typeOfOrder: {
+        type: String,
+        enum: ['buying', 'substitution'],
+        default: 'buying'
     },
-    minimumNumberOnOrder : {
-        type : Number, 
-        default : 3,
+    minimumNumberOnOrder: {
+        type: Number,
+        default: 3,
     },
-    user:{
-        type : Number, 
-        ref : "user"
+    user: {
+        type: Number,
+        ref: "user"
     },
-    creationDate : {
-        type : Date, 
-        default : Date.now
+    creationDate: {
+        type: Date,
+        default: Date.now
     }
 })
 
 CartonSchema.set('toJSON', {
-    transform : (doc, ret, options)=>{
+    transform: (doc, ret, options) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
@@ -53,6 +53,9 @@ CartonSchema.set('toJSON', {
 
 
 autoIncrement.initialize(mongoose.connection);
-CartonSchema.plugin(autoIncrement.plugin, 'carton');
+CartonSchema.plugin(autoIncrement.plugin, {
+    model: 'carton',
+    startAt: 1,
+});
 
 export default mongoose.model("carton", CartonSchema); 
