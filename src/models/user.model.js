@@ -1,21 +1,17 @@
-import mongoose , { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import autoIncrement from 'mongoose-auto-increment';
 
 const UserSchema = new Schema({
-    _id : {
-        type : Number, 
-        required :true
-    },  
     name: {
         type: String,
-        trim:true,
+        trim: true,
         required: true
     },
-    type:{
-      type:String,
-      enum:["ADMIN","NORMAL","PROVIDER"],
-      default:"NORMAL"
+    type: {
+        type: String,
+        enum: ["ADMIN", "NORMAL", "PROVIDER"],
+        default: "NORMAL"
     },
     password: {
         type: String,
@@ -28,10 +24,14 @@ const UserSchema = new Schema({
     },
     img: { // url 
         type: String,
-        default:"https://image.flaticon.com/icons/svg/190/190600.svg"
+        default: "https://image.flaticon.com/icons/svg/190/190600.svg"
     },
-    pushTokens:[{
-        type:String
+    creationDate: {
+        type: Date,
+        default: new Date
+    },
+    pushTokens: [{
+        type: String
     }]
 
 });
@@ -54,7 +54,7 @@ UserSchema.pre("save", function (next) {
 
 UserSchema.methods.isValidPassword = function (newPassword, callback) {
     let user = this;
-    bcrypt.compare(newPassword,user.password, function (err, isMatch) {
+    bcrypt.compare(newPassword, user.password, function (err, isMatch) {
         if (err)
             return callback(err);
         callback(null, isMatch);
@@ -74,9 +74,9 @@ UserSchema.set('toJSON', {
 });
 
 autoIncrement.initialize(mongoose.connection);
-UserSchema.plugin(autoIncrement.plugin,  {
+UserSchema.plugin(autoIncrement.plugin, {
     model: 'user',
     startAt: 1,
 });
 
-export default mongoose.model("user", UserSchema) ;
+export default mongoose.model("user", UserSchema);
