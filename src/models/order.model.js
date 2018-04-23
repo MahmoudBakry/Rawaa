@@ -15,11 +15,11 @@ const OrderSchema = new Schema({
         ref: "galon",
         required: true
     }],
-    galonsQuantity: {
+    galonsQuantity: [{
         type: Number,
         required: true
-    },
-    galonsType: [{
+    }],
+    galonsTypeOrder: [{
         type: String
     }],
     price: {
@@ -42,7 +42,8 @@ const OrderSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["pendding", "accepted", "rejected", "onTheWay", "delivered"]
+        enum: ["pendding", "accepted", "rejected", "onTheWay", "delivered"],
+        default : "pendding",
     },
     creationDate: {
         type: Date,
