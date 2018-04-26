@@ -6,7 +6,11 @@ const router = express.Router();
 
 router.route('/users/:userId/orders')
     .post(
-        requireAuth,
-        OrderController.validateBody(),
-        OrderController.createOrder)
+    requireAuth,
+    OrderController.validateBody(),
+    OrderController.createOrder)
+
+router.route('/providers/:providerId/orders')
+    .get(requireAuth,
+    OrderController.allOrdersOfProvider)
 export default router;
