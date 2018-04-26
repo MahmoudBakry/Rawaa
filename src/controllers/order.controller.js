@@ -5,35 +5,50 @@ import ApiError from '../helpers/ApiError'
 import ApiResponse from '../helpers/ApiResponse'
 
 export default {
+
+    validateBody(isUpdate = false) {
+        return [
+            body("price").exists().withMessage("price is required"),
+            body("provider").exists().withMessage("provider is required"),
+        ];
+    },
     //create new order 
     async createOrder(req, res, next) {
         try {
+            const validationErrors = validationResult(req).array();
+            if (validationErrors.length > 0)
+                return next(new ApiError(422, validationErrors));
             let objectToCreated = {}
-            //prepare carton data [[{id : 5, quantity : 8}]]  
-            let cartonsArray = req.body.cartons;
-            let cartons = [];
-            let cartonsQuantity = [];
-            for (let x = 0; x < cartonsArray.length; x++) {
-                cartons.push(cartonsArray[x].id);
-                cartonsQuantity.push(cartonsArray[x].quantity);
+            //prepare carton data [[{id : 5, quantity : 8}]]
+            if (req.body.cartons) {
+                let cartonsArray = req.body.cartons;
+                let cartons = [];
+                let cartonsQuantity = [];
+                for (let x = 0; x < cartonsArray.length; x++) {
+                    cartons.push(cartonsArray[x].id);
+                    cartonsQuantity.push(cartonsArray[x].quantity);
+                }
+                objectToCreated.cartons = cartons;
+                objectToCreated.cartonsQuantity = cartonsQuantity
             }
-            objectToCreated.cartons = cartons;
-            objectToCreated.cartonsQuantity = cartonsQuantity
+
             //prepare galons data 
-            let galonsArray = req.body.galons;
-            let galons = [];
-            let galonsQuantityOfBuying = [];
-            let galonsQuantityOfSubstitution = [];
-            let galonsType = [];
-            for (let z = 0; z < galonsArray.length; z++) {
-                galons.push(galonsArray[z].id);
-                galonsQuantityOfBuying.push(galonsArray[z].quantityOfBuying);
-                galonsQuantityOfSubstitution.push(galonsArray[z].quantityOfSubstitution);
-                galonsType.push(galonsArray[z].typeOrder)
+            if (req.body.galons) {
+                let galonsArray = req.body.galons;
+                let galons = [];
+                let galonsQuantityOfBuying = [];
+                let galonsQuantityOfSubstitution = [];
+                let galonsType = [];
+                for (let z = 0; z < galonsArray.length; z++) {
+                    galons.push(galonsArray[z].id);
+                    galonsQuantityOfBuying.push(galonsArray[z].quantityOfBuying);
+                    galonsQuantityOfSubstitution.push(galonsArray[z].quantityOfSubstitution);
+                    galonsType.push(galonsArray[z].typeOrder)
+                }
+                objectToCreated.galons = galons;
+                objectToCreated.galonsQuantityOfBuying = galonsQuantityOfBuying;
+                objectToCreated.galonsQuantityOfSubstitution = galonsQuantityOfSubstitution;
             }
-            objectToCreated.galons = galons;
-            objectToCreated.galonsQuantityOfBuying = galonsQuantityOfBuying;
-            objectToCreated.galonsQuantityOfSubstitution = galonsQuantityOfSubstitution;
             //prepare location 
             let lang = req.body.lang;
             let lat = req.body.lat;

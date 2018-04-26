@@ -7,5 +7,6 @@ const router = express.Router();
 router.route('/users/:userId/orders')
     .post(
         requireAuth,
+        OrderController.validateBody(),
         OrderController.createOrder)
 export default router;

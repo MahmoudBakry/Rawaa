@@ -5,7 +5,6 @@ const OrderSchema = new Schema({
     cartons: [{
         type: Number,
         ref: 'carton',
-        required: true
     }],
     cartonsQuantity: [{
         type: Number,
@@ -13,7 +12,6 @@ const OrderSchema = new Schema({
     galons: [{
         type: Number,
         ref: "galon",
-        required: true
     }],
     galonsQuantityOfBuying: [{
         type: Number,
