@@ -15,12 +15,11 @@ const OrderSchema = new Schema({
         ref: "galon",
         required: true
     }],
-    galonsQuantity: [{
+    galonsQuantityOfBuying: [{
         type: Number,
-        required: true
     }],
-    galonsTypeOrder: [{
-        type: String
+    galonsQuantityOfSubstitution: [{
+        type: Number,
     }],
     price: {
         type: Number,
