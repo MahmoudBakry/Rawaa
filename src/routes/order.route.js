@@ -13,4 +13,9 @@ router.route('/users/:userId/orders')
 router.route('/providers/:providerId/orders')
     .get(requireAuth,
     OrderController.allOrdersOfProvider)
+router.route('/orders/pric-distance')
+    .post(
+    requireAuth,
+    OrderController.validateBodyOfCalulatePrice(),
+    OrderController.calculatePriceOfDistance)
 export default router;

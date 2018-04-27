@@ -3,7 +3,13 @@ import mongoose from 'mongoose';
 import { body, validationResult } from 'express-validator/check';
 import ApiError from '../helpers/ApiError'
 import ApiResponse from '../helpers/ApiResponse'
+import Price from '../models/price-of-km.model'
 
+
+
+let deg2rad = (deg) => {
+    return deg * (Math.PI / 180)
+}
 export default {
 
     validateBody(isUpdate = false) {
@@ -163,14 +169,54 @@ export default {
                 OneOrderItem.id = elme.id;
                 return OneOrderItem;
             })
-
-
-
             return res.status(200).json(result)
         } catch (err) {
             next(err)
         }
-    }
+    },
+
+    //validation input of calulate price 
+    validateBodyOfCalulatePrice() {
+        return [
+            body("from").exists().withMessage("from location is required"),
+            body("to").exists().withMessage("to location is required")
+        ]
+    },
+    //calulate price of distance between provider and dilver location of order
+    async calculatePriceOfDistance(req, res, next) {
+        try {
+            const validationErrors = validationResult(req).array();
+            if (validationErrors.length > 0)
+                return next(new ApiError(422, validationErrors));
+            //first locattion point
+            let lang1 = parseFloat(req.body.from.lang);
+            let lat1 = parseFloat(req.body.from.lat);
+            //scound location point
+            let lang2 = parseFloat(req.body.to.lang);
+            let lat2 = parseFloat(req.body.to.lat);
+
+            let R = 6371; // Radius of the earth in km
+            let dLat = deg2rad(lat2 - lat1);  // deg2rad above
+            let dLon = deg2rad(lang2 - lang1);
+            let a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            let d = R * c; // Distance in km
+            console.log(d);
+            //fetch price for each km
+            let price = await Price.findOne();
+            let cost = d * price.price;
+            return res.status(200).json({
+                "cost": cost,
+                "distance": d,
+                "priceOfEachKm": price.price
+            });
+        } catch (err) {
+            next(err)
+        }
+    },
 
 
 
