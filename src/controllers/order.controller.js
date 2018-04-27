@@ -114,7 +114,7 @@ export default {
     //retrive all orders under specific provider 
     async allOrdersOfProvider(req, res, next) {
         try {
-            let limit = req.query.limit || 20;
+            const limit = parseInt(req.query.limit) || 20;
             let page = req.query.page || 1;
             let query = {}
             if (req.query.status)
@@ -169,7 +169,14 @@ export default {
                 OneOrderItem.id = elme.id;
                 return OneOrderItem;
             })
-            return res.status(200).json(result)
+            res.send(new ApiResponse(
+                result,
+                page,
+                Math.ceil((result.length) / limit),
+                limit,
+                result.length,
+                req
+            ))
         } catch (err) {
             next(err)
         }
@@ -217,6 +224,7 @@ export default {
             next(err)
         }
     },
+
 
 
 
