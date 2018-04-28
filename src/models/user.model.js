@@ -24,11 +24,14 @@ const UserSchema = new Schema({
     },
     img: { // url 
         type: String,
-        default: "https://image.flaticon.com/icons/svg/190/190600.svg"
+        default: "https://cdn1.iconfinder.com/data/icons/people-cultures/512/_saudi_arabian_man-512.png"
     },
     creationDate: {
         type: Date,
         default: new Date
+    },
+    company :{
+        type : String,
     },
     pushTokens: [{
         type: String
