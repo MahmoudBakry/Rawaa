@@ -224,6 +224,58 @@ export default {
             next(err)
         }
     },
+    //retrive one order details
+    async orderDetails(req, res, next) {
+        let orderId = req.params.orderId;
+        try {
+            //prepare response    
+            let retriveOrder = await Order.findById(orderId)
+                .populate('cartons')
+                .populate('galons')
+                .populate('customer')
+                .populate('provider')
+            if (!retriveOrder)
+                return res.status(404).end()
+            let lenOfCartons = await retriveOrder.cartons.length;
+            let result = {};
+            result.cartons = []
+            //prepare cartons 
+            let resultcartons = retriveOrder.cartons;
+            let resultcartonsQuantity = retriveOrder.cartonsQuantity;
+            for (let x = 0; x < lenOfCartons; x++) {
+                let item = resultcartons[x];
+                let quantityItem = resultcartonsQuantity[x];
+                result.cartons.push({ "item": item, "quantity": quantityItem })
+            }
+            //prepare galons 
+            let lenOfGalons = await retriveOrder.galons.length;
+            result.galons = [];
+            let resultGalons = retriveOrder.galons;
+            let resultGalonsQuantityOfBuying = retriveOrder.galonsQuantityOfBuying;
+            let resultGalonsQuantityOfSubstitution = retriveOrder.galonsQuantityOfSubstitution;
+            let resultGalonsTypeOrder = retriveOrder.galonsTypeOrder;
+            for (let x = 0; x < lenOfGalons; x++) {
+                let item = resultGalons[x];
+                let quantityOfBuying = resultGalonsQuantityOfBuying[x];
+                let quantityOfSubstitution = resultGalonsQuantityOfSubstitution[x];
+                result.galons.push({
+                    "item": item,
+                    "quantityOfBuying": quantityOfBuying,
+                    "typeOrderOfSubstitution": quantityOfSubstitution
+                })
+            }
+            result.price = retriveOrder.price;
+            result.location = retriveOrder.location;
+            result.customer = retriveOrder.customer;
+            result.provider = retriveOrder.provider;
+            result.status = retriveOrder.status;
+            result.creationDate = retriveOrder.creationDate;
+            result.id = retriveOrder.id
+            return res.status(200).json(result)
+        } catch (err) {
+            next(err)
+        }
+    },
 
 
 
