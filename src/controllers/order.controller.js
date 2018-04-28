@@ -276,6 +276,59 @@ export default {
             next(err)
         }
     },
+    //accept order
+    async acceptOrder(req, res, next) {
+        let orderId = req.params.orderId;
+        try {
+            let orderDetails = await Order.findById(orderId);
+            if (!orderDetails)
+                return res.status(404).end();
+            let provider = orderDetails.provider;
+            if (!(provider == req.user.id))
+                next(new ApiError(403, "not access to this operation"))
+            let newOrder = await Order.findByIdAndUpdate(orderId, { status: "accepted" }, { new: true });
+            console.log(newOrder.status)
+            return res.status(204).end();
+        } catch (err) {
+            next(err)
+        }
+    },
+    //refuse order 
+    async refuseOrder(req, res, next) {
+        let orderId = req.params.orderId;
+        try {
+
+            let orderDetails = await Order.findById(orderId);
+            if (!orderDetails)
+                return res.status(404).end();
+            let provider = orderDetails.provider;
+            if (!(provider == req.user.id))
+                next(new ApiError(403, "not access to this operation"))
+            let newOrder = await Order.findByIdAndUpdate(orderId, { status: "rejected" }, { new: true });
+            console.log(newOrder.status)
+            return res.status(204).end();
+        } catch (err) {
+            next(err)
+        }
+    },
+    // make order ondiliver order 
+    async makeOrderOnDiliver(req, res, next) {
+        let orderId = req.params.orderId;
+        try {
+
+            let orderDetails = await Order.findById(orderId);
+            if (!orderDetails)
+                return res.status(404).end();
+            let provider = orderDetails.provider;
+            if (!(provider == req.user.id))
+                next(new ApiError(403, "not access to this operation"))
+            let newOrder = await Order.findByIdAndUpdate(orderId, { status: "onTheWay" }, { new: true });
+            console.log(newOrder.status)
+            return res.status(204).end();
+        } catch (err) {
+            next(err)
+        }
+    },
 
 
 

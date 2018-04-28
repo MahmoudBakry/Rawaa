@@ -17,6 +17,18 @@ router.route('/providers/:providerId/orders')
 router.route('/orders/:orderId')
     .get(requireAuth,
     OrderController.orderDetails)
+//accept order 
+router.route('/orders/:orderId/accept')
+    .put(requireAuth,
+    OrderController.acceptOrder)
+//refuse order 
+router.route('/orders/:orderId/refuse')
+    .put(requireAuth,
+    OrderController.refuseOrder)
+//on the way order 
+router.route('/orders/:orderId/on-the-Way')
+    .put(requireAuth,
+    OrderController.makeOrderOnDiliver)
 
 //get distance between 2 point locations
 router.route('/orders/pric-distance')
