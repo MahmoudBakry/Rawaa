@@ -285,7 +285,7 @@ export default {
                 return res.status(404).end();
             let provider = orderDetails.provider;
             if (!(provider == req.user.id))
-                next(new ApiError(403, "not access to this operation"))
+                return next(new ApiError(403, "not access to this operation"))
             let newOrder = await Order.findByIdAndUpdate(orderId, { status: "accepted" }, { new: true });
             console.log(newOrder.status)
             return res.status(204).end();
@@ -303,7 +303,7 @@ export default {
                 return res.status(404).end();
             let provider = orderDetails.provider;
             if (!(provider == req.user.id))
-                next(new ApiError(403, "not access to this operation"))
+                return next(new ApiError(403, "not access to this operation"))
             let newOrder = await Order.findByIdAndUpdate(orderId, { status: "rejected" }, { new: true });
             console.log(newOrder.status)
             return res.status(204).end();
@@ -321,7 +321,7 @@ export default {
                 return res.status(404).end();
             let provider = orderDetails.provider;
             if (!(provider == req.user.id))
-                next(new ApiError(403, "not access to this operation"))
+                return next(new ApiError(403, "not access to this operation"))
             let newOrder = await Order.findByIdAndUpdate(orderId, { status: "onTheWay" }, { new: true });
             console.log(newOrder.status)
             return res.status(204).end();
@@ -329,7 +329,23 @@ export default {
             next(err)
         }
     },
-
+    // make order done by user 
+    async makeOrderDone(req, res, next) {
+        let orderId = req.params.orderId;
+        try {
+            let orderDetails = await Order.findById(orderId);
+            if (!orderDetails)
+                return res.status(404).end();
+            let customer = orderDetails.customer
+            if (!(customer == req.user.id))
+                return next(new ApiError(403, "not access to this operation"))
+            let newOrder = await Order.findByIdAndUpdate(orderId, { status: "delivered" }, { new: true });
+            console.log(newOrder.status)
+            return res.status(204).end();
+        } catch (err) {
+            next(err)
+        }
+    },
 
 
 

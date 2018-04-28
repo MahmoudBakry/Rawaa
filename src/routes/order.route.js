@@ -29,6 +29,10 @@ router.route('/orders/:orderId/refuse')
 router.route('/orders/:orderId/on-the-Way')
     .put(requireAuth,
     OrderController.makeOrderOnDiliver)
+//make order done 
+router.route('/orders/:orderId/delivered')
+    .put(requireAuth,
+    OrderController.makeOrderDone)
 
 //get distance between 2 point locations
 router.route('/orders/pric-distance')
