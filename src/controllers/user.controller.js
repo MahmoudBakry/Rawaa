@@ -133,6 +133,7 @@ export default {
                 OneOrderItem.status = elme.status;
                 OneOrderItem.creationDate = elme.creationDate;
                 OneOrderItem.id = elme.id;
+                OneOrderItem.price = elme.price;
                 return OneOrderItem;
             })
             res.send(new ApiResponse(
@@ -203,6 +204,7 @@ export default {
                 OneOrderItem.status = elme.status;
                 OneOrderItem.creationDate = elme.creationDate;
                 OneOrderItem.id = elme.id;
+                OneOrderItem.price = elme.price;
                 return OneOrderItem;
             })
             res.send(new ApiResponse(
@@ -217,5 +219,5 @@ export default {
             next(err)
         }
     },
-    
+
 }
