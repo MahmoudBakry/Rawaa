@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var config = {};
-config.mongoUrl = "mongodb://admin:admin@ds119049.mlab.com:19049/rewaa";
+config.mongoUrl = "mongodb://admin:admin@ds163119.mlab.com:63119/rawaa2";
 config.jwtSecret = "App"; // To be changed
 
 

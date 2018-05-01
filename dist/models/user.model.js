@@ -19,10 +19,6 @@ var _mongooseAutoIncrement2 = _interopRequireDefault(_mongooseAutoIncrement);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var UserSchema = new _mongoose.Schema({
-    _id: {
-        type: Number,
-        required: true
-    },
     name: {
         type: String,
         trim: true,
@@ -44,7 +40,18 @@ var UserSchema = new _mongoose.Schema({
     },
     img: { // url 
         type: String,
-        default: "https://image.flaticon.com/icons/svg/190/190600.svg"
+        default: "https://cdn1.iconfinder.com/data/icons/people-cultures/512/_saudi_arabian_man-512.png"
+    },
+    creationDate: {
+        type: Date,
+        default: new Date()
+    },
+    company: {
+        type: String
+    },
+    active: {
+        type: Boolean,
+        default: true
     },
     pushTokens: [{
         type: String

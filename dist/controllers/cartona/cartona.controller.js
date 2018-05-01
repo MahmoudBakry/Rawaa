@@ -24,6 +24,10 @@ var _ApiResponse = require('../../helpers/ApiResponse');
 
 var _ApiResponse2 = _interopRequireDefault(_ApiResponse);
 
+var _user = require('../../models/user.model');
+
+var _user2 = _interopRequireDefault(_user);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -42,7 +46,7 @@ exports.default = {
         var _this = this;
 
         return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-            var validationErrors, newDoc;
+            var validationErrors, userDetails, newDoc;
             return regeneratorRuntime.wrap(function _callee$(_context) {
                 while (1) {
                     switch (_context.prev = _context.next) {
@@ -62,44 +66,57 @@ exports.default = {
                             if (!(req.user.type == "PROVIDER")) {
                                 next(new _ApiError2.default(403, 'not provider user'));
                             }
+                            _context.next = 7;
+                            return _user2.default.findById(req.user.id);
 
-                            if (!req.file) {
-                                _context.next = 11;
+                        case 7:
+                            userDetails = _context.sent;
+
+                            if (userDetails.active == true) {
+                                _context.next = 10;
                                 break;
                             }
 
-                            _context.next = 8;
+                            return _context.abrupt('return', next(new _ApiError2.default(403, "don't access, your account is deactive")));
+
+                        case 10:
+                            if (!req.file) {
+                                _context.next = 16;
+                                break;
+                            }
+
+                            _context.next = 13;
                             return (0, _index.toImgUrl)(req.file);
 
-                        case 8:
+                        case 13:
                             req.body.img = _context.sent;
-                            _context.next = 12;
+                            _context.next = 17;
                             break;
 
-                        case 11:
+                        case 16:
                             next(new _ApiError2.default(422, 'img is required'));
 
-                        case 12:
+                        case 17:
                             req.body.user = req.user._id;
-                            _context.next = 15;
+                            _context.next = 20;
                             return _cartona2.default.create(req.body);
 
-                        case 15:
+                        case 20:
                             newDoc = _context.sent;
                             return _context.abrupt('return', res.status(201).json(newDoc));
 
-                        case 19:
-                            _context.prev = 19;
+                        case 24:
+                            _context.prev = 24;
                             _context.t0 = _context['catch'](3);
 
                             next(_context.t0);
 
-                        case 22:
+                        case 27:
                         case 'end':
                             return _context.stop();
                     }
                 }
-            }, _callee, _this, [[3, 19]]);
+            }, _callee, _this, [[3, 24]]);
         }))();
     },
 
@@ -125,7 +142,7 @@ exports.default = {
                         case 7:
                             docsCount = _context2.sent;
                             _context2.next = 10;
-                            return _cartona2.default.find(query).populate('user').skip(page * limit - limit).limit(limit).sort({ creationDate: -1 });
+                            return _cartona2.default.find(query).populate('user').skip((page - 1) * limit).limit(limit).sort({ creationDate: -1 });
 
                         case 10:
                             allDocs = _context2.sent;
@@ -151,15 +168,15 @@ exports.default = {
         var _this3 = this;
 
         return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-            var cartonID, carton, newCartonw;
+            var cartonId, carton, newCartonw;
             return regeneratorRuntime.wrap(function _callee3$(_context3) {
                 while (1) {
                     switch (_context3.prev = _context3.next) {
                         case 0:
-                            cartonID = req.params.cartonID;
+                            cartonId = req.params.cartonId;
                             _context3.prev = 1;
                             _context3.next = 4;
-                            return _cartona2.default.findById(cartonID);
+                            return _cartona2.default.findById(cartonId);
 
                         case 4:
                             carton = _context3.sent;
@@ -185,7 +202,7 @@ exports.default = {
 
                         case 11:
                             _context3.next = 13;
-                            return _cartona2.default.update({ _id: cartonID }, {
+                            return _cartona2.default.update({ _id: cartonId }, {
                                 $set: {
                                     numberOfBottles: req.body.numberOfBottles || carton.numberOfBottles,
                                     sizeOfBottles: req.body.sizeOfBottles || carton.sizeOfBottles,
@@ -232,8 +249,8 @@ exports.default = {
                         case 0:
                             _context4.prev = 0;
 
-                            if (!req.params.cartonID) next(new _ApiError2.default(422, "missed cartonID"));
-                            cartonId = req.params.cartonID;
+                            if (!req.params.cartonId) next(new _ApiError2.default(422, "missed cartonId"));
+                            cartonId = req.params.cartonId;
                             _context4.next = 5;
                             return _cartona2.default.findById(cartonId).populate('user');
 
@@ -262,6 +279,47 @@ exports.default = {
                     }
                 }
             }, _callee4, _this4, [[0, 11]]);
+        }))();
+    },
+
+    //retrive all galons under one provider 
+    cartonsOfOneProvider: function cartonsOfOneProvider(req, res, next) {
+        var _this5 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+            var limit, page, userId, docsCount, allDocs;
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                while (1) {
+                    switch (_context5.prev = _context5.next) {
+                        case 0:
+                            limit = parseInt(req.query.limit) || 20;
+                            page = req.query.page || 1;
+                            userId = req.params.userId;
+                            _context5.prev = 3;
+                            _context5.next = 6;
+                            return _cartona2.default.count({ user: userId });
+
+                        case 6:
+                            docsCount = _context5.sent;
+                            _context5.next = 9;
+                            return _cartona2.default.find({ user: userId }).populate('user').skip((page - 1) * limit).limit(limit).sort({ creationDate: -1 });
+
+                        case 9:
+                            allDocs = _context5.sent;
+                            return _context5.abrupt('return', res.send(new _ApiResponse2.default(allDocs, page, Math.ceil(docsCount / limit), limit, docsCount, req)));
+
+                        case 13:
+                            _context5.prev = 13;
+                            _context5.t0 = _context5['catch'](3);
+
+                            next(_context5.t0);
+
+                        case 16:
+                        case 'end':
+                            return _context5.stop();
+                    }
+                }
+            }, _callee5, _this5, [[3, 13]]);
         }))();
     }
 };

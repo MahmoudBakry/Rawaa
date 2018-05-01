@@ -24,5 +24,7 @@ var router = _express2.default.Router();
 
 router.route('/').post((0, _multer.multerSaveTo)('galons').single('img'), _galon2.default.validateBody(), _galon2.default.createGalon).get(_galon2.default.allGalons);
 
+router.route('/:galonId').get(_galon2.default.galonDetails).put((0, _multer.multerSaveTo)('galons').single('img'), _galon2.default.updateGalon);
+
 exports.default = router;
 //# sourceMappingURL=galon.route.js.map

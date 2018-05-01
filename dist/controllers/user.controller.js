@@ -30,6 +30,14 @@ var _multer = require("../services/multer");
 
 var _index = require("../utils/index");
 
+var _order = require("../models/order.model");
+
+var _order2 = _interopRequireDefault(_order);
+
+var _ApiResponse = require("../helpers/ApiResponse");
+
+var _ApiResponse2 = _interopRequireDefault(_ApiResponse);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -167,7 +175,6 @@ exports.default = {
         }))();
     },
 
-
     //sign in logic 
     signin: function signin(req, res, next) {
         var _this3 = this;
@@ -189,6 +196,170 @@ exports.default = {
                     }
                 }
             }, _callee3, _this3);
+        }))();
+    },
+    completedOrderOfOneUser: function completedOrderOfOneUser(req, res, next) {
+        var _this4 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+            var limit, page, allOrders, result;
+            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                while (1) {
+                    switch (_context4.prev = _context4.next) {
+                        case 0:
+                            _context4.prev = 0;
+                            limit = parseInt(req.query.limit) || 20;
+                            page = req.query.page || 1;
+                            _context4.next = 5;
+                            return _order2.default.find({
+                                $and: [{ customer: req.params.userId }, { $or: [{ status: "delivered" }, { status: "rejected" }] }]
+                            }).populate('cartons').populate('galons').populate('customer').populate('provider').skip((page - 1) * limit).limit(limit).sort({ creationDate: -1 });
+
+                        case 5:
+                            allOrders = _context4.sent;
+
+                            //prepare response 
+                            result = allOrders.map(function (elme) {
+                                //first prepare cartons
+                                var OneOrderItem = {};
+                                var cartonsResult = [];
+                                var cartons = elme.cartons;
+                                var cartonsQuantity = elme.cartonsQuantity;
+                                for (var x = 0; x < cartons.length; x++) {
+                                    var oneCartonItem = {};
+                                    var item = cartons[x];
+                                    var quantity = cartonsQuantity[x];
+                                    oneCartonItem.item = item;
+                                    oneCartonItem.quantity = quantity;
+                                    cartonsResult.push(oneCartonItem);
+                                }
+                                //assign cartons result to order item 
+                                OneOrderItem.cartons = cartonsResult;
+                                //prepare galons    
+                                var galonsResult = [];
+                                var galons = elme.galons;
+                                var galonsQuantityOfBuying = elme.galonsQuantityOfBuying;
+                                var galonsQuantityOfSubstitution = elme.galonsQuantityOfSubstitution;
+                                for (var _x4 = 0; _x4 < galons.length; _x4++) {
+                                    var oneGalonsItem = {};
+                                    var _item = galons[_x4];
+                                    var QuantityOfBuying = galonsQuantityOfBuying[_x4];
+                                    var QuantityOfSubstitution = galonsQuantityOfSubstitution[_x4];
+                                    oneGalonsItem.item = _item;
+                                    oneGalonsItem.galonsQuantityOfBuying = QuantityOfBuying;
+                                    oneGalonsItem.galonsQuantityOfSubstitution = QuantityOfSubstitution;
+                                    galonsResult.push(oneGalonsItem);
+                                }
+                                //assign galons result to order item 
+                                OneOrderItem.galons = galonsResult;
+                                OneOrderItem.location = elme.location;
+                                OneOrderItem.customer = elme.customer;
+                                OneOrderItem.provider = elme.provider;
+                                OneOrderItem.status = elme.status;
+                                OneOrderItem.creationDate = elme.creationDate;
+                                OneOrderItem.id = elme.id;
+                                OneOrderItem.price = elme.price;
+                                return OneOrderItem;
+                            });
+
+                            res.send(new _ApiResponse2.default(result, page, Math.ceil(result.length / limit), limit, result.length, req));
+                            _context4.next = 13;
+                            break;
+
+                        case 10:
+                            _context4.prev = 10;
+                            _context4.t0 = _context4["catch"](0);
+
+                            next(_context4.t0);
+
+                        case 13:
+                        case "end":
+                            return _context4.stop();
+                    }
+                }
+            }, _callee4, _this4, [[0, 10]]);
+        }))();
+    },
+    unCompletedOrderOfOneUser: function unCompletedOrderOfOneUser(req, res, next) {
+        var _this5 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+            var limit, page, allOrders, result;
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                while (1) {
+                    switch (_context5.prev = _context5.next) {
+                        case 0:
+                            _context5.prev = 0;
+                            limit = parseInt(req.query.limit) || 20;
+                            page = req.query.page || 1;
+                            _context5.next = 5;
+                            return _order2.default.find({
+                                $and: [{ customer: req.params.userId }, { $or: [{ status: "onTheWay" }, { status: "accepted" }, { status: "pendding" }] }]
+                            }).populate('cartons').populate('galons').populate('customer').populate('provider').skip((page - 1) * limit).limit(limit).sort({ creationDate: -1 });
+
+                        case 5:
+                            allOrders = _context5.sent;
+
+                            //prepare response 
+                            result = allOrders.map(function (elme) {
+                                //first prepare cartons
+                                var OneOrderItem = {};
+                                var cartonsResult = [];
+                                var cartons = elme.cartons;
+                                var cartonsQuantity = elme.cartonsQuantity;
+                                for (var x = 0; x < cartons.length; x++) {
+                                    var oneCartonItem = {};
+                                    var item = cartons[x];
+                                    var quantity = cartonsQuantity[x];
+                                    oneCartonItem.item = item;
+                                    oneCartonItem.quantity = quantity;
+                                    cartonsResult.push(oneCartonItem);
+                                }
+                                //assign cartons result to order item 
+                                OneOrderItem.cartons = cartonsResult;
+                                //prepare galons    
+                                var galonsResult = [];
+                                var galons = elme.galons;
+                                var galonsQuantityOfBuying = elme.galonsQuantityOfBuying;
+                                var galonsQuantityOfSubstitution = elme.galonsQuantityOfSubstitution;
+                                for (var _x5 = 0; _x5 < galons.length; _x5++) {
+                                    var oneGalonsItem = {};
+                                    var _item2 = galons[_x5];
+                                    var QuantityOfBuying = galonsQuantityOfBuying[_x5];
+                                    var QuantityOfSubstitution = galonsQuantityOfSubstitution[_x5];
+                                    oneGalonsItem.item = _item2;
+                                    oneGalonsItem.galonsQuantityOfBuying = QuantityOfBuying;
+                                    oneGalonsItem.galonsQuantityOfSubstitution = QuantityOfSubstitution;
+                                    galonsResult.push(oneGalonsItem);
+                                }
+                                //assign galons result to order item 
+                                OneOrderItem.galons = galonsResult;
+                                OneOrderItem.location = elme.location;
+                                OneOrderItem.customer = elme.customer;
+                                OneOrderItem.provider = elme.provider;
+                                OneOrderItem.status = elme.status;
+                                OneOrderItem.creationDate = elme.creationDate;
+                                OneOrderItem.id = elme.id;
+                                OneOrderItem.price = elme.price;
+                                return OneOrderItem;
+                            });
+
+                            res.send(new _ApiResponse2.default(result, page, Math.ceil(result.length / limit), limit, result.length, req));
+                            _context5.next = 13;
+                            break;
+
+                        case 10:
+                            _context5.prev = 10;
+                            _context5.t0 = _context5["catch"](0);
+
+                            next(_context5.t0);
+
+                        case 13:
+                        case "end":
+                            return _context5.stop();
+                    }
+                }
+            }, _callee5, _this5, [[0, 10]]);
         }))();
     }
 };

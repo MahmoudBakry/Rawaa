@@ -50,7 +50,7 @@ function multerSaveTo(folderName) {
 
     return (0, _multer2.default)({
         storage: storage,
-        fileFilter: fileFilter,
+        //  fileFilter,
         limits: {
             fileSize: 1024 * 1024 * 10 // limit 10mb
         }

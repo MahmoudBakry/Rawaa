@@ -32,7 +32,7 @@ exports.default = {
     validateBody: function validateBody() {
         var isUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-        return [(0, _check.body)("size").exists().withMessage("numberOfBottles is required"), (0, _check.body)("price").exists().withMessage("sizeOfBottles is required")];
+        return [(0, _check.body)("size").exists().withMessage("numberOfBottles is required"), (0, _check.body)("priceOfBuying").exists().withMessage("priceOfBuying is required")];
     },
 
     //create new galon
@@ -140,6 +140,158 @@ exports.default = {
                     }
                 }
             }, _callee2, _this2, [[3, 13]]);
+        }))();
+    },
+
+
+    //retrive one galone details 
+    galonDetails: function galonDetails(req, res, next) {
+        var _this3 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+            var galonId, doc;
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                while (1) {
+                    switch (_context3.prev = _context3.next) {
+                        case 0:
+                            galonId = req.params.galonId;
+                            _context3.next = 3;
+                            return _galon2.default.findById(galonId);
+
+                        case 3:
+                            doc = _context3.sent;
+
+                            if (doc) {
+                                _context3.next = 6;
+                                break;
+                            }
+
+                            return _context3.abrupt('return', next(new _ApiError2.default(404)));
+
+                        case 6:
+                            return _context3.abrupt('return', res.status(200).json(doc));
+
+                        case 7:
+                        case 'end':
+                            return _context3.stop();
+                    }
+                }
+            }, _callee3, _this3);
+        }))();
+    },
+
+
+    //update one galon details 
+    updateGalon: function updateGalon(req, res, next) {
+        var _this4 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+            var galonId, galon, newGalon;
+            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                while (1) {
+                    switch (_context4.prev = _context4.next) {
+                        case 0:
+                            galonId = req.params.galonId;
+                            _context4.prev = 1;
+                            _context4.next = 4;
+                            return _galon2.default.findById(galonId);
+
+                        case 4:
+                            galon = _context4.sent;
+
+                            if (req.user.id == galon.user) {
+                                _context4.next = 7;
+                                break;
+                            }
+
+                            return _context4.abrupt('return', next(new _ApiError2.default(403, "not have access to this resourse")));
+
+                        case 7:
+                            if (!req.file) {
+                                _context4.next = 11;
+                                break;
+                            }
+
+                            _context4.next = 10;
+                            return (0, _index.toImgUrl)(req.file);
+
+                        case 10:
+                            req.body.img = _context4.sent;
+
+                        case 11:
+                            _context4.next = 13;
+                            return _galon2.default.update({ _id: galonId }, {
+                                $set: {
+                                    size: req.body.size || galon.size,
+                                    img: req.body.img || galon.img,
+                                    priceOfBuying: req.body.priceOfBuying || galon.priceOfBuying,
+                                    priceOfSubstitution: req.body.priceOfSubstitution || galon.priceOfSubstitution,
+                                    minimumNumberOnOrder: req.body.minimumNumberOnOrder || galon.minimumNumberOnOrder
+                                }
+                            });
+
+                        case 13:
+                            _context4.next = 15;
+                            return _galon2.default.findById(galonId).populate('user');
+
+                        case 15:
+                            newGalon = _context4.sent;
+                            return _context4.abrupt('return', res.status(200).json(newGalon));
+
+                        case 19:
+                            _context4.prev = 19;
+                            _context4.t0 = _context4['catch'](1);
+
+                            next(_context4.t0);
+
+                        case 22:
+                        case 'end':
+                            return _context4.stop();
+                    }
+                }
+            }, _callee4, _this4, [[1, 19]]);
+        }))();
+    },
+
+
+    //retrive all galons under one provider 
+    galonsOfOneProvider: function galonsOfOneProvider(req, res, next) {
+        var _this5 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+            var limit, page, userId, docsCount, allDocs;
+            return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                while (1) {
+                    switch (_context5.prev = _context5.next) {
+                        case 0:
+                            limit = parseInt(req.query.limit) || 20;
+                            page = req.query.page || 1;
+                            userId = req.params.userId;
+                            _context5.prev = 3;
+                            _context5.next = 6;
+                            return _galon2.default.count({ user: userId });
+
+                        case 6:
+                            docsCount = _context5.sent;
+                            _context5.next = 9;
+                            return _galon2.default.find({ user: userId }).populate('user').skip((page - 1) * limit).limit(limit).sort({ creationDate: -1 });
+
+                        case 9:
+                            allDocs = _context5.sent;
+                            return _context5.abrupt('return', res.send(new _ApiResponse2.default(allDocs, page, Math.ceil(docsCount / limit), limit, docsCount, req)));
+
+                        case 13:
+                            _context5.prev = 13;
+                            _context5.t0 = _context5['catch'](3);
+
+                            next(_context5.t0);
+
+                        case 16:
+                        case 'end':
+                            return _context5.stop();
+                    }
+                }
+            }, _callee5, _this5, [[3, 13]]);
         }))();
     }
 };
