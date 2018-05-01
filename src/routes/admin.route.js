@@ -12,5 +12,9 @@ router.route('/price-delivir-km')
     .post(requireAuth, AdminController.createPriceOfKilloMeter)
 router.route('/price-delivir-km/:id')
     .put(requireAuth, AdminController.updatePriceOfKilloMeter)
+router.route('/users/:userId/de-active')
+    .put(requireAuth, AdminController.deactiveUser)
+router.route('/users/:userId/active')
+    .put(requireAuth, AdminController.activeUser)
 
 export default router

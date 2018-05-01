@@ -30,8 +30,12 @@ const UserSchema = new Schema({
         type: Date,
         default: new Date
     },
-    company :{
-        type : String,
+    company: {
+        type: String,
+    },
+    active: {
+        type: Boolean,
+        default: true
     },
     pushTokens: [{
         type: String

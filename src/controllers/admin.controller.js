@@ -56,6 +56,36 @@ export default {
             next(err)
         }
     },
+    //deactive user account
+    async deactiveUser(req, res, next) {
+        try {
+            if (!(req.user.type == "ADMIN"))
+                return next(new ApiError(403, "not admin user"));
+            let userId = req.params.userId;
+            let userDetails = await User.findById(userId);
+            if (!userDetails)
+                return next(new ApiError(404));
+            let newUser = await User.findByIdAndUpdate(userId, { active: false }, { new: true });
+            return res.status(200).json(newUser);
+        } catch (err) {
+            next(err)
+        }
+    },
+    //active user account 
+    async activeUser(req, res, next){
+        try {
+            if (!(req.user.type == "ADMIN"))
+                return next(new ApiError(403, "not admin user"));
+            let userId = req.params.userId;
+            let userDetails = await User.findById(userId);
+            if (!userDetails)
+                return next(new ApiError(404));
+            let newUser = await User.findByIdAndUpdate(userId, { active: true }, { new: true });
+            return res.status(200).json(newUser);
+        } catch (err) {
+            next(err)
+        }
+    },
 
 
 

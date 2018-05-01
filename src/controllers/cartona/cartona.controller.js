@@ -4,6 +4,7 @@ import { body, validationResult } from 'express-validator/check';
 import { toImgUrl } from '../../utils/index'
 import ApiError from '../../helpers/ApiError'
 import ApiResponse from '../../helpers/ApiResponse'
+import User from '../../models/user.model'
 
 export default {
     validateBody(isUpdate = false) {
@@ -23,6 +24,9 @@ export default {
             if (!(req.user.type == "PROVIDER")) {
                 next(new ApiError(403, 'not provider user'))
             }
+            let userDetails = await User.findById(req.user.id);
+            if (!(userDetails.active == true))
+                return next(new ApiError(403, "don't access, your account is deactive"))
 
             if (req.file) {
                 req.body.img = await toImgUrl(req.file)
