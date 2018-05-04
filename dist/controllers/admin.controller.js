@@ -26,6 +26,10 @@ var _priceOfKm = require('../models/price-of-km.model');
 
 var _priceOfKm2 = _interopRequireDefault(_priceOfKm);
 
+var _order = require('../models/order.model');
+
+var _order2 = _interopRequireDefault(_order);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -305,6 +309,74 @@ exports.default = {
                     }
                 }
             }, _callee5, _this5, [[0, 15]]);
+        }))();
+    },
+    adminStatisttics: function adminStatisttics(req, res, next) {
+        var _this6 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+            var numberOfOrder, penddingOrder, acceptedOrder, rejectedOrder, onTheWayOrder, deliveredOrder, numberOfClient, numberOfProvider;
+            return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                while (1) {
+                    switch (_context6.prev = _context6.next) {
+                        case 0:
+                            _context6.next = 2;
+                            return _order2.default.count();
+
+                        case 2:
+                            numberOfOrder = _context6.sent;
+                            _context6.next = 5;
+                            return _order2.default.count({ status: "pendding" });
+
+                        case 5:
+                            penddingOrder = _context6.sent;
+                            _context6.next = 8;
+                            return _order2.default.count({ status: "accepted" });
+
+                        case 8:
+                            acceptedOrder = _context6.sent;
+                            _context6.next = 11;
+                            return _order2.default.count({ status: "rejected" });
+
+                        case 11:
+                            rejectedOrder = _context6.sent;
+                            _context6.next = 14;
+                            return _order2.default.count({ status: "onTheWay" });
+
+                        case 14:
+                            onTheWayOrder = _context6.sent;
+                            _context6.next = 17;
+                            return _order2.default.count({ status: "delivered" });
+
+                        case 17:
+                            deliveredOrder = _context6.sent;
+                            _context6.next = 20;
+                            return _user2.default.count({ type: "NORMAL" });
+
+                        case 20:
+                            numberOfClient = _context6.sent;
+                            _context6.next = 23;
+                            return _user2.default.count({ type: "PROVIDER" });
+
+                        case 23:
+                            numberOfProvider = _context6.sent;
+                            return _context6.abrupt('return', res.status(200).json({
+                                numberOfOrder: numberOfOrder,
+                                penddingOrder: penddingOrder,
+                                acceptedOrder: acceptedOrder,
+                                rejectedOrder: rejectedOrder,
+                                onTheWayOrder: onTheWayOrder,
+                                deliveredOrder: deliveredOrder,
+                                numberOfClient: numberOfClient,
+                                numberOfProvider: numberOfProvider
+                            }));
+
+                        case 25:
+                        case 'end':
+                            return _context6.stop();
+                    }
+                }
+            }, _callee6, _this6);
         }))();
     }
 };

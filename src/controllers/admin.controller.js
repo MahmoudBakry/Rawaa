@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 import { body, validationResult } from 'express-validator/check';
 import ApiError from '../helpers/ApiError'
 import ApiResponse from '../helpers/ApiResponse'
-import PriceKm from '../models/price-of-km.model'
+import PriceKm from '../models/price-of-km.model';
+import Order from '../models/order.model'
+
 //KfQnPp9bNf2S2m6z
 export default {
     //create new order 
@@ -72,7 +74,7 @@ export default {
         }
     },
     //active user account 
-    async activeUser(req, res, next){
+    async activeUser(req, res, next) {
         try {
             if (!(req.user.type == "ADMIN"))
                 return next(new ApiError(403, "not admin user"));
@@ -86,7 +88,25 @@ export default {
             next(err)
         }
     },
-
-
+    async adminStatisttics(req, res, next) {
+        let numberOfOrder = await Order.count();
+        let penddingOrder = await Order.count({ status: "pendding" });
+        let acceptedOrder = await Order.count({ status: "accepted" });
+        let rejectedOrder = await Order.count({ status: "rejected" });
+        let onTheWayOrder = await Order.count({ status: "onTheWay" });
+        let deliveredOrder = await Order.count({ status: "delivered" });
+        let numberOfClient = await User.count({ type: "NORMAL" });
+        let numberOfProvider = await User.count({ type: "PROVIDER" });
+        return res.status(200).json({
+            numberOfOrder,
+            penddingOrder,
+            acceptedOrder,
+            rejectedOrder,
+            onTheWayOrder,
+            deliveredOrder,
+            numberOfClient,
+            numberOfProvider
+        })
+    },
 
 }

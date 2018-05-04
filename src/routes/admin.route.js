@@ -8,6 +8,8 @@ router.route('/users')
     .get(
     requireAuth,
     AdminController.allUsers)
+router.route('/counts-numbers')
+    .get(AdminController.adminStatisttics)
 router.route('/price-delivir-km')
     .post(requireAuth, AdminController.createPriceOfKilloMeter)
 router.route('/price-delivir-km/:id')
