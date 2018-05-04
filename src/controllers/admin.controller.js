@@ -109,4 +109,61 @@ export default {
         })
     },
 
+    async getRecentOrders(req, res, next) {
+        try {
+            let allOrders = await Order.find().sort({ creationDate: -1 }).limit(10)
+                .populate('cartons')
+                .populate('galons')
+                .populate('customer')
+                .populate('provider')
+            //prepare response 
+            let result = allOrders.map(elme => {
+                //first prepare cartons
+                let OneOrderItem = {};
+                let cartonsResult = [];
+                let cartons = elme.cartons;
+                let cartonsQuantity = elme.cartonsQuantity;
+                for (let x = 0; x < cartons.length; x++) {
+                    let oneCartonItem = {};
+                    let item = cartons[x];
+                    let quantity = cartonsQuantity[x]
+                    oneCartonItem.item = item;
+                    oneCartonItem.quantity = quantity;
+                    cartonsResult.push(oneCartonItem);
+                }
+                //assign cartons result to order item 
+                OneOrderItem.cartons = cartonsResult;
+                //prepare galons    
+                let galonsResult = [];
+                let galons = elme.galons;
+                let galonsQuantityOfBuying = elme.galonsQuantityOfBuying;
+                let galonsQuantityOfSubstitution = elme.galonsQuantityOfSubstitution;
+                for (let x = 0; x < galons.length; x++) {
+                    let oneGalonsItem = {};
+                    let item = galons[x];
+                    let QuantityOfBuying = galonsQuantityOfBuying[x]
+                    let QuantityOfSubstitution = galonsQuantityOfSubstitution[x]
+                    oneGalonsItem.item = item;
+                    oneGalonsItem.galonsQuantityOfBuying = QuantityOfBuying;
+                    oneGalonsItem.galonsQuantityOfSubstitution = QuantityOfSubstitution;
+                    galonsResult.push(oneGalonsItem);
+                }
+                //assign galons result to order item 
+                OneOrderItem.galons = galonsResult;
+                OneOrderItem.location = elme.location;
+                OneOrderItem.customer = elme.customer;
+                OneOrderItem.provider = elme.provider;
+                OneOrderItem.status = elme.status;
+                OneOrderItem.creationDate = elme.creationDate;
+                OneOrderItem.id = elme.id;
+                OneOrderItem.price = elme.price;
+                return OneOrderItem;
+            })
+            return res.status(200).json(result)
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
 }

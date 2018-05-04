@@ -27,6 +27,6 @@ router.route('/price-delivir-km').post(requireAuth, _admin2.default.createPriceO
 router.route('/price-delivir-km/:id').put(requireAuth, _admin2.default.updatePriceOfKilloMeter);
 router.route('/users/:userId/de-active').put(requireAuth, _admin2.default.deactiveUser);
 router.route('/users/:userId/active').put(requireAuth, _admin2.default.activeUser);
-
+router.route('/orders/recent').get(_admin2.default.getRecentOrders);
 exports.default = router;
 //# sourceMappingURL=admin.route.js.map

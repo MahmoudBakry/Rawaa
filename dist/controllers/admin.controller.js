@@ -378,6 +378,81 @@ exports.default = {
                 }
             }, _callee6, _this6);
         }))();
+    },
+    getRecentOrders: function getRecentOrders(req, res, next) {
+        var _this7 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+            var allOrders, result;
+            return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                while (1) {
+                    switch (_context7.prev = _context7.next) {
+                        case 0:
+                            _context7.prev = 0;
+                            _context7.next = 3;
+                            return _order2.default.find().sort({ creationDate: -1 }).limit(10).populate('cartons').populate('galons').populate('customer').populate('provider');
+
+                        case 3:
+                            allOrders = _context7.sent;
+
+                            //prepare response 
+                            result = allOrders.map(function (elme) {
+                                //first prepare cartons
+                                var OneOrderItem = {};
+                                var cartonsResult = [];
+                                var cartons = elme.cartons;
+                                var cartonsQuantity = elme.cartonsQuantity;
+                                for (var x = 0; x < cartons.length; x++) {
+                                    var oneCartonItem = {};
+                                    var item = cartons[x];
+                                    var quantity = cartonsQuantity[x];
+                                    oneCartonItem.item = item;
+                                    oneCartonItem.quantity = quantity;
+                                    cartonsResult.push(oneCartonItem);
+                                }
+                                //assign cartons result to order item 
+                                OneOrderItem.cartons = cartonsResult;
+                                //prepare galons    
+                                var galonsResult = [];
+                                var galons = elme.galons;
+                                var galonsQuantityOfBuying = elme.galonsQuantityOfBuying;
+                                var galonsQuantityOfSubstitution = elme.galonsQuantityOfSubstitution;
+                                for (var _x = 0; _x < galons.length; _x++) {
+                                    var oneGalonsItem = {};
+                                    var _item = galons[_x];
+                                    var QuantityOfBuying = galonsQuantityOfBuying[_x];
+                                    var QuantityOfSubstitution = galonsQuantityOfSubstitution[_x];
+                                    oneGalonsItem.item = _item;
+                                    oneGalonsItem.galonsQuantityOfBuying = QuantityOfBuying;
+                                    oneGalonsItem.galonsQuantityOfSubstitution = QuantityOfSubstitution;
+                                    galonsResult.push(oneGalonsItem);
+                                }
+                                //assign galons result to order item 
+                                OneOrderItem.galons = galonsResult;
+                                OneOrderItem.location = elme.location;
+                                OneOrderItem.customer = elme.customer;
+                                OneOrderItem.provider = elme.provider;
+                                OneOrderItem.status = elme.status;
+                                OneOrderItem.creationDate = elme.creationDate;
+                                OneOrderItem.id = elme.id;
+                                OneOrderItem.price = elme.price;
+                                return OneOrderItem;
+                            });
+                            return _context7.abrupt('return', res.status(200).json(result));
+
+                        case 8:
+                            _context7.prev = 8;
+                            _context7.t0 = _context7['catch'](0);
+
+                            next(_context7.t0);
+
+                        case 11:
+                        case 'end':
+                            return _context7.stop();
+                    }
+                }
+            }, _callee7, _this7, [[0, 8]]);
+        }))();
     }
 };
 //# sourceMappingURL=admin.controller.js.map

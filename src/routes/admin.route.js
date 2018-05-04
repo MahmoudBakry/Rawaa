@@ -18,5 +18,6 @@ router.route('/users/:userId/de-active')
     .put(requireAuth, AdminController.deactiveUser)
 router.route('/users/:userId/active')
     .put(requireAuth, AdminController.activeUser)
-
+router.route('/orders/recent')
+    .get(AdminController.getRecentOrders)
 export default router
