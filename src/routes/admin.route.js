@@ -1,5 +1,4 @@
 import AdminController from '../controllers/admin.controller';
-import ProviderController from '../controllers/provider.controller'
 import express from 'express';
 import passport from 'passport';
 const router = express.Router();

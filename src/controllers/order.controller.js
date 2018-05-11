@@ -4,7 +4,7 @@ import { body, validationResult } from 'express-validator/check';
 import ApiError from '../helpers/ApiError'
 import ApiResponse from '../helpers/ApiResponse'
 import Price from '../models/price-of-km.model'
-
+import { send } from '../services/push-notifications'
 
 
 let deg2rad = (deg) => {
@@ -105,6 +105,8 @@ export default {
             result.status = retriveOrder.status;
             result.creationDate = retriveOrder.creationDate;
             result.id = retriveOrder.id
+            //send notifications 
+            send(newOrder.provider, "لديك طلب جديد ", result)
             return res.status(201).json(result)
         } catch (err) {
             next(err)
@@ -294,7 +296,7 @@ export default {
             next(err)
         }
     },
-    //refuse order 
+    //refuse order by provider
     async refuseOrder(req, res, next) {
         let orderId = req.params.orderId;
         try {
@@ -307,6 +309,8 @@ export default {
                 return next(new ApiError(403, "not access to this operation"))
             let newOrder = await Order.findByIdAndUpdate(orderId, { status: "rejected" }, { new: true });
             console.log(newOrder.status)
+            //send notification to client
+            send(newOrder.customer, "نعتذر لعدم قبول طلبك", newOrder)
             return res.status(204).end();
         } catch (err) {
             next(err)
@@ -342,6 +346,8 @@ export default {
                 return next(new ApiError(403, "not access to this operation"))
             let newOrder = await Order.findByIdAndUpdate(orderId, { status: "delivered" }, { new: true });
             console.log(newOrder.status)
+            //send notification to provider by completed order 
+            send(newOrder.provider, "لقد تم اتمام الطلب بنجاح ",newOrder )
             return res.status(204).end();
         } catch (err) {
             next(err)
