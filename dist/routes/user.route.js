@@ -40,7 +40,9 @@ var requireSignIn = _passport2.default.authenticate('local', { session: false })
 var requireAuth = _passport2.default.authenticate('jwt', { session: false });
 var router = _express2.default.Router();
 
-router.route('/signup').post(_user2.default.validateBody(), _user2.default.signUp);
+router.use(_pushNotification2.default);
+
+router.route('/signup').post((0, _multer.multerSaveTo)('users').single('img'), _user2.default.validateBody(), _user2.default.signUp);
 
 router.post("/signin", requireSignIn, _user2.default.signin);
 

@@ -8,6 +8,10 @@ var _admin = require('../controllers/admin.controller');
 
 var _admin2 = _interopRequireDefault(_admin);
 
+var _provider = require('../controllers/provider.controller');
+
+var _provider2 = _interopRequireDefault(_provider);
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
@@ -24,14 +28,15 @@ var requireAuth = _passport2.default.authenticate('jwt', { session: false });
 router.route('/users').get(requireAuth, _admin2.default.allUsers);
 router.route('/counts-numbers').get(_admin2.default.adminStatisttics);
 router.route('/price-delivir-km').post(requireAuth, _admin2.default.createPriceOfKilloMeter);
+
+router.route('/orders/recent').get(_admin2.default.getRecentOrders);
+
 router.route('/price-delivir-km/:id').put(requireAuth, _admin2.default.updatePriceOfKilloMeter);
 router.route('/users/:userId/de-active').put(requireAuth, _admin2.default.deactiveUser);
 
 router.route('/users/:userId/active').put(requireAuth, _admin2.default.activeUser);
 
-router.route('/providers/:providerId/count-orders').get(ProviderController.countOrdersOfProvider);
-
-router.route('/orders/recent').get(_admin2.default.getRecentOrders);
+router.route('/providers/:providerId/count-orders').get(_provider2.default.countOrdersOfProvider);
 
 exports.default = router;
 //# sourceMappingURL=admin.route.js.map

@@ -479,20 +479,22 @@ exports.default = {
                             newOrder = _context5.sent;
 
                             console.log(newOrder.status);
+                            //send notification to client
+                            (0, _pushNotifications.send)(newOrder.customer, "your Order is accepted", newOrder);
                             return _context5.abrupt('return', res.status(204).end());
 
-                        case 17:
-                            _context5.prev = 17;
+                        case 18:
+                            _context5.prev = 18;
                             _context5.t0 = _context5['catch'](1);
 
                             next(_context5.t0);
 
-                        case 20:
+                        case 21:
                         case 'end':
                             return _context5.stop();
                     }
                 }
-            }, _callee5, _this5, [[1, 17]]);
+            }, _callee5, _this5, [[1, 18]]);
         }))();
     },
 
@@ -601,20 +603,22 @@ exports.default = {
                             newOrder = _context7.sent;
 
                             console.log(newOrder.status);
+                            //send notification to provider by completed order 
+                            (0, _pushNotifications.send)(newOrder.customer, "Your Order On The Way ", newOrder);
                             return _context7.abrupt('return', res.status(204).end());
 
-                        case 17:
-                            _context7.prev = 17;
+                        case 18:
+                            _context7.prev = 18;
                             _context7.t0 = _context7['catch'](1);
 
                             next(_context7.t0);
 
-                        case 20:
+                        case 21:
                         case 'end':
                             return _context7.stop();
                     }
                 }
-            }, _callee7, _this7, [[1, 17]]);
+            }, _callee7, _this7, [[1, 18]]);
         }))();
     },
 

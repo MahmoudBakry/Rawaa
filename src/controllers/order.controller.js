@@ -291,6 +291,8 @@ export default {
                 return next(new ApiError(403, "not access to this operation"))
             let newOrder = await Order.findByIdAndUpdate(orderId, { status: "accepted" }, { new: true });
             console.log(newOrder.status)
+            //send notification to client
+            send(newOrder.customer, "your Order is accepted", newOrder)
             return res.status(204).end();
         } catch (err) {
             next(err)
@@ -329,6 +331,8 @@ export default {
                 return next(new ApiError(403, "not access to this operation"))
             let newOrder = await Order.findByIdAndUpdate(orderId, { status: "onTheWay" }, { new: true });
             console.log(newOrder.status)
+            //send notification to provider by completed order 
+            send(newOrder.customer, "Your Order On The Way ",newOrder )
             return res.status(204).end();
         } catch (err) {
             next(err)
