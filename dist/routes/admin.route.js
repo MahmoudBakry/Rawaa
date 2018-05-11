@@ -12,6 +12,10 @@ var _provider = require('../controllers/provider.controller');
 
 var _provider2 = _interopRequireDefault(_provider);
 
+var _user = require('../controllers/user.controller');
+
+var _user2 = _interopRequireDefault(_user);
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
@@ -37,6 +41,8 @@ router.route('/users/:userId/de-active').put(requireAuth, _admin2.default.deacti
 router.route('/users/:userId/active').put(requireAuth, _admin2.default.activeUser);
 
 router.route('/providers/:providerId/count-orders').get(_provider2.default.countOrdersOfProvider);
+
+router.route('/users/:customerId/count-orders').get(_user2.default.countOrdersOfCustomer);
 
 exports.default = router;
 //# sourceMappingURL=admin.route.js.map

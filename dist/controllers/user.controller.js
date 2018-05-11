@@ -361,6 +361,77 @@ exports.default = {
                 }
             }, _callee5, _this5, [[0, 10]]);
         }))();
+    },
+
+    //fetch some statistics about order 
+    countOrdersOfCustomer: function countOrdersOfCustomer(req, res, next) {
+        var _this6 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+            var customerId, customerDetails, countOfAllOrder, queryComplete, countOfCompleted, queryOfPending, countOfPendding, queryOfRefuse, countOfRefuse;
+            return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                while (1) {
+                    switch (_context6.prev = _context6.next) {
+                        case 0:
+                            _context6.prev = 0;
+                            customerId = req.params.customerId;
+                            _context6.next = 4;
+                            return _user2.default.findById(customerId);
+
+                        case 4:
+                            customerDetails = _context6.sent;
+                            _context6.next = 7;
+                            return _order2.default.count({ customer: customerId });
+
+                        case 7:
+                            countOfAllOrder = _context6.sent;
+                            queryComplete = {};
+
+                            queryComplete.status = "delivered";
+                            queryComplete.customer = customerId;
+                            _context6.next = 13;
+                            return _order2.default.count(queryComplete);
+
+                        case 13:
+                            countOfCompleted = _context6.sent;
+                            queryOfPending = {};
+
+                            queryOfPending.status = "pendding";
+                            queryOfPending.customer = customerId;
+                            _context6.next = 19;
+                            return _order2.default.count(queryOfPending);
+
+                        case 19:
+                            countOfPendding = _context6.sent;
+                            queryOfRefuse = {};
+
+                            queryOfRefuse.status = "rejected";
+                            queryOfRefuse.customer = customerId;
+                            _context6.next = 25;
+                            return _order2.default.count(queryOfRefuse);
+
+                        case 25:
+                            countOfRefuse = _context6.sent;
+                            return _context6.abrupt("return", res.status(200).json({
+                                countOfAllOrder: countOfAllOrder,
+                                countOfCompleted: countOfCompleted,
+                                countOfPendding: countOfPendding,
+                                countOfRefuse: countOfRefuse
+                            }));
+
+                        case 29:
+                            _context6.prev = 29;
+                            _context6.t0 = _context6["catch"](0);
+
+                            next(_context6.t0);
+
+                        case 32:
+                        case "end":
+                            return _context6.stop();
+                    }
+                }
+            }, _callee6, _this6, [[0, 29]]);
+        }))();
     }
 };
 //# sourceMappingURL=user.controller.js.map
