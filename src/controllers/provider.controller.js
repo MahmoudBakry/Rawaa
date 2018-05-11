@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import ApiResponse from '../helpers/ApiResponse';
 import ApiError from '../helpers/ApiError';
 import Order from '../models/order.model';
+import User from '../models/user.model'
 
 export default {
     async unCompletedOrderOfOneProvider(req, res, next) {
@@ -146,4 +147,36 @@ export default {
             next(err)
         }
     },
+    //fetch some statistics about provider 
+    async countOrdersOfProvider(req, res, next) {
+        try {
+            let providerId = req.params.providerId;
+            let providerDetails = await User.findById(providerId);
+            let countOfAllOrder = await Order.count({ provider: providerId });
+
+            let queryComplete = {};
+            queryComplete.status = "delivered";
+            queryComplete.provider = providerId;
+            let countOfCompleted = await Order.count(queryComplete);
+
+            let queryOfPending = {}
+            queryOfPending.status = "pendding";
+            queryOfPending.provider = providerId;
+            let countOfPendding = await Order.count(queryOfPending);
+
+            let queryOfRefuse = {}
+            queryOfRefuse.status = "rejected";
+            queryOfRefuse.provider = providerId;
+            let countOfRefuse = await Order.count(queryOfRefuse);
+
+            return res.status(200).json({
+                countOfAllOrder,
+                countOfCompleted,
+                countOfPendding,
+                countOfRefuse
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
 }
