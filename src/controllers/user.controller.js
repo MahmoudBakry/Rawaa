@@ -219,5 +219,37 @@ export default {
             next(err)
         }
     },
+     //fetch some statistics about order 
+     async countOrdersOfCustomer(req, res, next) {
+        try {
+            let customerId = req.params.customerId;
+            let customerDetails = await User.findById(customerId);
+            let countOfAllOrder = await Order.count({ customer: customerId });
+
+            let queryComplete = {};
+            queryComplete.status = "delivered";
+            queryComplete.customer = customerId;
+            let countOfCompleted = await Order.count(queryComplete);
+
+            let queryOfPending = {}
+            queryOfPending.status = "pendding";
+            queryOfPending.customer = customerId;
+            let countOfPendding = await Order.count(queryOfPending);
+
+            let queryOfRefuse = {}
+            queryOfRefuse.status = "rejected";
+            queryOfRefuse.customer = customerId;
+            let countOfRefuse = await Order.count(queryOfRefuse);
+
+            return res.status(200).json({
+                countOfAllOrder,
+                countOfCompleted,
+                countOfPendding,
+                countOfRefuse
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
 
 }

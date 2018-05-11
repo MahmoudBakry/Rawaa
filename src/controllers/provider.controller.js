@@ -178,5 +178,5 @@ export default {
         } catch (err) {
             next(err)
         }
-    }
+    },
 }

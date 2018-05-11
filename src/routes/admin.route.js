@@ -1,5 +1,6 @@
 import AdminController from '../controllers/admin.controller';
 import ProviderController from '../controllers/provider.controller';
+import userController  from '../controllers/user.controller';
 import express from 'express';
 import passport from 'passport';
 const router = express.Router();
@@ -28,5 +29,9 @@ router.route('/users/:userId/active')
 router.route('/providers/:providerId/count-orders')
     .get(ProviderController.countOrdersOfProvider)
 
+router.route('/users/:customerId/count-orders')
+    .get(userController.countOrdersOfCustomer)
 
-export default router
+
+        
+export default router;
