@@ -26,6 +26,8 @@ var _priceOfKm = require('../models/price-of-km.model');
 
 var _priceOfKm2 = _interopRequireDefault(_priceOfKm);
 
+var _pushNotifications = require('../services/push-notifications');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -164,20 +166,22 @@ exports.default = {
                             result.status = retriveOrder.status;
                             result.creationDate = retriveOrder.creationDate;
                             result.id = retriveOrder.id;
+                            //send notifications 
+                            (0, _pushNotifications.send)(newOrder.provider, "لديك طلب جديد ", result);
                             return _context.abrupt('return', res.status(201).json(result));
 
-                        case 47:
-                            _context.prev = 47;
+                        case 48:
+                            _context.prev = 48;
                             _context.t0 = _context['catch'](0);
 
                             next(_context.t0);
 
-                        case 50:
+                        case 51:
                         case 'end':
                             return _context.stop();
                     }
                 }
-            }, _callee, _this, [[0, 47]]);
+            }, _callee, _this, [[0, 48]]);
         }))();
     },
 
@@ -492,7 +496,7 @@ exports.default = {
         }))();
     },
 
-    //refuse order 
+    //refuse order by provider
     refuseOrder: function refuseOrder(req, res, next) {
         var _this6 = this;
 
@@ -535,20 +539,22 @@ exports.default = {
                             newOrder = _context6.sent;
 
                             console.log(newOrder.status);
+                            //send notification to client
+                            (0, _pushNotifications.send)(newOrder.customer, "نعتذر لعدم قبول طلبك", newOrder);
                             return _context6.abrupt('return', res.status(204).end());
 
-                        case 17:
-                            _context6.prev = 17;
+                        case 18:
+                            _context6.prev = 18;
                             _context6.t0 = _context6['catch'](1);
 
                             next(_context6.t0);
 
-                        case 20:
+                        case 21:
                         case 'end':
                             return _context6.stop();
                     }
                 }
-            }, _callee6, _this6, [[1, 17]]);
+            }, _callee6, _this6, [[1, 18]]);
         }))();
     },
 
@@ -655,20 +661,22 @@ exports.default = {
                             newOrder = _context8.sent;
 
                             console.log(newOrder.status);
+                            //send notification to provider by completed order 
+                            (0, _pushNotifications.send)(newOrder.provider, "لقد تم اتمام الطلب بنجاح ", newOrder);
                             return _context8.abrupt('return', res.status(204).end());
 
-                        case 17:
-                            _context8.prev = 17;
+                        case 18:
+                            _context8.prev = 18;
                             _context8.t0 = _context8['catch'](1);
 
                             next(_context8.t0);
 
-                        case 20:
+                        case 21:
                         case 'end':
                             return _context8.stop();
                     }
                 }
-            }, _callee8, _this8, [[1, 17]]);
+            }, _callee8, _this8, [[1, 18]]);
         }))();
     }
 };

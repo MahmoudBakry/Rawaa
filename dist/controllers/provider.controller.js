@@ -20,6 +20,10 @@ var _order = require('../models/order.model');
 
 var _order2 = _interopRequireDefault(_order);
 
+var _user = require('../models/user.model');
+
+var _user2 = _interopRequireDefault(_user);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -187,6 +191,77 @@ exports.default = {
                     }
                 }
             }, _callee2, _this2, [[0, 10]]);
+        }))();
+    },
+
+    //fetch some statistics about provider 
+    countOrdersOfProvider: function countOrdersOfProvider(req, res, next) {
+        var _this3 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+            var providerId, providerDetails, countOfAllOrder, queryComplete, countOfCompleted, queryOfPending, countOfPendding, queryOfRefuse, countOfRefuse;
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                while (1) {
+                    switch (_context3.prev = _context3.next) {
+                        case 0:
+                            _context3.prev = 0;
+                            providerId = req.params.providerId;
+                            _context3.next = 4;
+                            return _user2.default.findById(providerId);
+
+                        case 4:
+                            providerDetails = _context3.sent;
+                            _context3.next = 7;
+                            return _order2.default.count({ provider: providerId });
+
+                        case 7:
+                            countOfAllOrder = _context3.sent;
+                            queryComplete = {};
+
+                            queryComplete.status = "delivered";
+                            queryComplete.provider = providerId;
+                            _context3.next = 13;
+                            return _order2.default.count(queryComplete);
+
+                        case 13:
+                            countOfCompleted = _context3.sent;
+                            queryOfPending = {};
+
+                            queryOfPending.status = "pendding";
+                            queryOfPending.provider = providerId;
+                            _context3.next = 19;
+                            return _order2.default.count(queryOfPending);
+
+                        case 19:
+                            countOfPendding = _context3.sent;
+                            queryOfRefuse = {};
+
+                            queryOfRefuse.status = "rejected";
+                            queryOfRefuse.provider = providerId;
+                            _context3.next = 25;
+                            return _order2.default.count(queryOfRefuse);
+
+                        case 25:
+                            countOfRefuse = _context3.sent;
+                            return _context3.abrupt('return', res.status(200).json({
+                                countOfAllOrder: countOfAllOrder,
+                                countOfCompleted: countOfCompleted,
+                                countOfPendding: countOfPendding,
+                                countOfRefuse: countOfRefuse
+                            }));
+
+                        case 29:
+                            _context3.prev = 29;
+                            _context3.t0 = _context3['catch'](0);
+
+                            next(_context3.t0);
+
+                        case 32:
+                        case 'end':
+                            return _context3.stop();
+                    }
+                }
+            }, _callee3, _this3, [[0, 29]]);
         }))();
     }
 };
