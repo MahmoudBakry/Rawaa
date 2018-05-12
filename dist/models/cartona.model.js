@@ -50,6 +50,10 @@ var CartonSchema = new _mongoose.Schema({
         type: Number,
         ref: "user"
     },
+    available: {
+        type: Boolean,
+        default: true
+    },
     creationDate: {
         type: Date,
         default: Date.now

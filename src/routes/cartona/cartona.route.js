@@ -6,19 +6,20 @@ const router = express.Router();
 
 router.route('/')
     .post(
-        multerSaveTo('cartona').single('img'),
-        cartonaController.validateBody(),
-        CartonaController.createCartona
+    multerSaveTo('cartona').single('img'),
+    cartonaController.validateBody(),
+    CartonaController.createCartona
     )
 
     .get(CartonaController.allCartones)
 
 router.route('/:cartonId')
     .put(multerSaveTo('cartona').single('img'),
-        CartonaController.updateCartona)
+    CartonaController.updateCartona)
 
     .get(CartonaController.cartonDetails)
-
+router.route('/:cartonId/available')
+    .put(cartonaController.updateAvalaibiltyOfCarton)
 export default router;
 
 

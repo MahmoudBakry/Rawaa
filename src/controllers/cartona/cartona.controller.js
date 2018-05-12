@@ -131,5 +131,24 @@ export default {
             next(err)
         }
     },
+    //make carttons available
+    async updateAvalaibiltyOfCarton(req, res, next) {
+        try {
+            let cartonId = req.params.cartonId;
+            let cartonDetails = await Cartona.findById(cartonId);
+            if (!cartonDetails)
+                return res.status(404).end();
+
+            if (cartonDetails.available == true)
+                cartonDetails.available = false
+            else
+                cartonDetails.available = true
+
+            await cartonDetails.save();
+            return res.status(204).end();
+        } catch (err) {
+            next(err)
+        }
+    },
 
 }

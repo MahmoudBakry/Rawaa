@@ -321,6 +321,56 @@ exports.default = {
                 }
             }, _callee5, _this5, [[3, 13]]);
         }))();
+    },
+
+    //make carttons available
+    updateAvalaibiltyOfCarton: function updateAvalaibiltyOfCarton(req, res, next) {
+        var _this6 = this;
+
+        return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+            var cartonId, cartonDetails;
+            return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                while (1) {
+                    switch (_context6.prev = _context6.next) {
+                        case 0:
+                            _context6.prev = 0;
+                            cartonId = req.params.cartonId;
+                            _context6.next = 4;
+                            return _cartona2.default.findById(cartonId);
+
+                        case 4:
+                            cartonDetails = _context6.sent;
+
+                            if (cartonDetails) {
+                                _context6.next = 7;
+                                break;
+                            }
+
+                            return _context6.abrupt('return', res.status(404).end());
+
+                        case 7:
+
+                            if (cartonDetails.available == true) cartonDetails.available = false;else cartonDetails.available = true;
+
+                            _context6.next = 10;
+                            return cartonDetails.save();
+
+                        case 10:
+                            return _context6.abrupt('return', res.status(204).end());
+
+                        case 13:
+                            _context6.prev = 13;
+                            _context6.t0 = _context6['catch'](0);
+
+                            next(_context6.t0);
+
+                        case 16:
+                        case 'end':
+                            return _context6.stop();
+                    }
+                }
+            }, _callee6, _this6, [[0, 13]]);
+        }))();
     }
 };
 //# sourceMappingURL=cartona.controller.js.map

@@ -117,7 +117,25 @@ export default {
             next(err)
         }
     },
+    //make carttons available
+    async updateAvalaibiltyOfGalons(req, res, next) {
+        try {
+            let galonId = req.params.galonId;
+            let galonDetails = await Galon.findById(galonId);
+            if (!galonDetails)
+                return res.status(404).end();
 
+            if (galonDetails.available == true)
+                galonDetails.available = false
+            else
+                galonDetails.available = true
+
+            await galonDetails.save();
+            return res.status(204).end();
+        } catch (err) {
+            next(err)
+        }
+    },
 
 
 }

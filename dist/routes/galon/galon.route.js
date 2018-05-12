@@ -26,5 +26,6 @@ router.route('/').post((0, _multer.multerSaveTo)('galons').single('img'), _galon
 
 router.route('/:galonId').get(_galon2.default.galonDetails).put((0, _multer.multerSaveTo)('galons').single('img'), _galon2.default.updateGalon);
 
+router.route('/:galonId/available').put(_galon2.default.updateAvalaibiltyOfGalons);
 exports.default = router;
 //# sourceMappingURL=galon.route.js.map

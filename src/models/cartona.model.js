@@ -37,6 +37,10 @@ const CartonSchema = new Schema({
         type: Number,
         ref: "user"
     },
+    available: {
+        type: Boolean,
+        default: true
+    },
     creationDate: {
         type: Date,
         default: Date.now
