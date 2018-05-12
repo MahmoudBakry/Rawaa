@@ -1,6 +1,7 @@
 import AdminController from '../controllers/admin.controller';
 import ProviderController from '../controllers/provider.controller';
-import userController  from '../controllers/user.controller';
+import userController from '../controllers/user.controller';
+import MessageController from '../controllers/messageAdmin.controller'
 import express from 'express';
 import passport from 'passport';
 const router = express.Router();
@@ -20,11 +21,16 @@ router.route('/orders/recent')
 
 router.route('/price-delivir-km/:id')
     .put(requireAuth, AdminController.updatePriceOfKilloMeter)
+
 router.route('/users/:userId/de-active')
     .put(requireAuth, AdminController.deactiveUser)
 
 router.route('/users/:userId/active')
     .put(requireAuth, AdminController.activeUser)
+
+router.route('/users/:userId/messages')
+    .post(requireAuth, MessageController.createMessage)
+    .get(requireAuth, MessageController.allMessageOfOneUser)
 
 router.route('/providers/:providerId/count-orders')
     .get(ProviderController.countOrdersOfProvider)
@@ -33,5 +39,5 @@ router.route('/users/:customerId/count-orders')
     .get(userController.countOrdersOfCustomer)
 
 
-        
+
 export default router;

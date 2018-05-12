@@ -16,6 +16,10 @@ var _user = require('../controllers/user.controller');
 
 var _user2 = _interopRequireDefault(_user);
 
+var _messageAdmin = require('../controllers/messageAdmin.controller');
+
+var _messageAdmin2 = _interopRequireDefault(_messageAdmin);
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
@@ -36,9 +40,12 @@ router.route('/price-delivir-km').post(requireAuth, _admin2.default.createPriceO
 router.route('/orders/recent').get(_admin2.default.getRecentOrders);
 
 router.route('/price-delivir-km/:id').put(requireAuth, _admin2.default.updatePriceOfKilloMeter);
+
 router.route('/users/:userId/de-active').put(requireAuth, _admin2.default.deactiveUser);
 
 router.route('/users/:userId/active').put(requireAuth, _admin2.default.activeUser);
+
+router.route('/users/:userId/messages').post(requireAuth, _messageAdmin2.default.createMessage).get(requireAuth, _messageAdmin2.default.allMessageOfOneUser);
 
 router.route('/providers/:providerId/count-orders').get(_provider2.default.countOrdersOfProvider);
 
